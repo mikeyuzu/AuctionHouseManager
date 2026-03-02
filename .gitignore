@@ -1,0 +1,16 @@
+# .gitignore for AuctionHouseManager
+
+# User-specific files
+.vs/
+
+# Compilation output
+bin/
+obj/
+
+# User-specific project settings
+*.user
+*.userosscache
+*.sln.docstates
+
+# Packages
+*.nupkg
