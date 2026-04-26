@@ -23,8 +23,8 @@ namespace AuctionHouseManager
                 try
                 {
                     // 1. custom_item_book と auction_house から itemId を取得
-                    var itemBookIds = GetItemIdsFromTableAsync("custom_item_book", "itemId");
-                    var auctionIds = GetItemIdsFromTableAsync("auction_house", "itemid");
+                    var itemBookIds = GetItemIdsFromTableAsync("custom_item_book", "itemId", string.Empty);
+                    var auctionIds = GetItemIdsFromTableAsync("auction_house", "itemid", "sale = 0");
 
                     // 2. 出品対象の itemId を抽出
                     var itemsToAuction = new HashSet<int>(itemBookIds);
@@ -133,14 +133,19 @@ namespace AuctionHouseManager
         /// </summary>
         /// <param name="tableName"></param>
         /// <param name="columnName"></param>
+        /// <param name="whereName"></param>
         /// <returns></returns>
-        private static HashSet<int> GetItemIdsFromTableAsync(string tableName, string columnName)
+        private static HashSet<int> GetItemIdsFromTableAsync(string tableName, string columnName, string whereName)
         {
             var ids = new HashSet<int>();
             using (var connection = new MySqlConnection(ConnectionString))
             {
                 connection.Open();
                 string query = $"SELECT DISTINCT {columnName} FROM {tableName}";
+                if (whereName != string.Empty)
+                {
+                    query += $" WHERE {whereName}";
+                }
 
                 var cmd = new MySqlCommand(query, connection);
                 using var reader = cmd.ExecuteReader();
